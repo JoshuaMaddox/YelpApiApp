@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
-import CardStore from '../stores/CardStore'
+import SearchStore from '../stores/SearchStore'
 import ToAPIActions from '../actions/ToAPIActions'
+import { Link } from 'react-router'
+import EasyTransition from 'react-easy-transition'
 
 export default class Layout extends Component {
   constructor() {
     super();
     this.state = {
-      testData: CardStore.getAllFlashCards()
+      testData: SearchStore.getSearchResults()
     }
 
     this.testFunc = this.testFunc.bind(this)
@@ -14,16 +16,16 @@ export default class Layout extends Component {
   }
 
   componentWillMount() {
-    CardStore.startListening(this._onChange);
+    SearchStore.startListening(this._onChange);
   }
 
   componentWillUnmount() {
-    CardStore.stopListening(this._onChange);
+    SearchStore.stopListening(this._onChange);
   }
 
   _onChange() {
     this.setState({ 
-      testData: CardStore.getAllFlashCards() 
+      testData: SearchStore.getSearchResults() 
     })
   }
 
@@ -34,9 +36,21 @@ export default class Layout extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.testData ? <h1>{this.state.testData}</h1> : <h1>data not received</h1> }
-        <button className="btn btn-primary" onClick={this.testFunc}>Test</button> 
+      <div className='row topRow'>
+        <div className="bannerRow">
+          <h1>"HOLLA" <br />IS AN API FETCHER DESIGNED TO GET YOU TO USE THIS APP INSTEAD OF YELP BUT USING YELP'S DATA.<br />PLEASE GIVE THIS APP 5 STARS ON YELP.<br />OUR YELP RATING IS IMPORTANT IN OUR GOAL OF OVERTAKING YELP!</h1>
+        </div>
+        <div className="nextRow">
+          <div className="col-sm-6">
+            <Link to='/businesses' className="customBtn">Search Businesses</Link>
+          </div>
+          <div className="col-sm-6">
+            <Link to='/favorites' className="customBtn">View Your Favorites</Link> 
+          </div>
+        </div> 
+        <div className='row text-align'>
+          {this.props.children}
+        </div>
       </div>
 
     )

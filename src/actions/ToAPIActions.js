@@ -1,9 +1,22 @@
 import API from '../API'
 
 const ToAPIActions = {
-  getFlashCards(){
-  console.log('In the toAPIActions action: ')
-  API.getFlashCards() 
+  sendSearch(searchTerm){
+  API.sendSearch(searchTerm) 
+  },
+
+  singledOut(id){
+    API.singledOut(id)
+  },
+
+  addFav(id){
+    API.addFav(id)
+  },
+  getMyFavorites(){
+    API.getMyFavorites()
+  },
+  removeFav(favId){
+    API.removeFav(favId)
   }
 }
 export default ToAPIActions

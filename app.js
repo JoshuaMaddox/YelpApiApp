@@ -6,8 +6,10 @@ const PORT = 8000,
       webpack = require('webpack'),
       bodyParser = require('body-parser'),
       webpackConfig = require('./webpack.config'),
+      yelpHandlers = require('./models/yelpHandlers.js'),
       webpackDevMiddleware = require('webpack-dev-middleware'),
       webpackHotMiddleware = require('webpack-hot-middleware')
+
 
 //Express invocation
 const app = express()
@@ -27,9 +29,64 @@ app.use(webpackDevMiddleware(compiler, {
 app.use(webpackHotMiddleware(compiler))
 
 
-app.get('/test', (req, res) => {
-  res.send('Hiya buddy')
+//Get all favorites
+app.get('/businesses/favorites', (req, res) => {
+  yelpHandlers.getAllFavs((err, favs) => {
+    if(err) {
+      return res.status(400).send(err)
+    }
+    res.send(favs)
+  })
 })
+
+//Delete a Favorite
+app.delete('/businesses/favorites/:id', (req, res) => {
+  let searchId = req.params.id
+  yelpHandlers.deleteFavs(searchId, (err, favs) => {
+    if(err) {
+      return res.status(400).send(err)
+    }
+    res.send(favs)
+  })
+})
+
+//Get Single Business
+app.get('/businesses/:id', (req, res) => {
+  let searchId = req.params.id
+  yelpHandlers.singleOut(searchId, (err, businesses) => {
+    if(err) {
+      return res.status(400).send(err)
+    }
+    res.send(businesses)
+  })
+})
+
+//Get search results for term and location
+app.get('/businesses', (req, res) => {
+  let searchObj = {
+    term: req.query.term,
+    location: req.query.location
+  }
+  yelpHandlers.searchYelp(searchObj, (err, businesses) => {
+    if(err) {
+      return res.status(400).send(err)
+    }
+    res.send(businesses)
+  })
+})
+
+//Add a business to favorites
+app.put('/businesses/:id', (req, res) => {
+  let searchId = req.params.id
+  yelpHandlers.putToFavs(searchId, (err, businesses) => {
+    if(err) {
+      return res.status(400).send(err)
+    }
+    res.send(`${searchId} was added to your favorites`)
+  })
+})
+
+//Remove a business from favories
 
 app.listen(PORT, err => {
   console.log( err || `Express listening on port ${8000}`)
